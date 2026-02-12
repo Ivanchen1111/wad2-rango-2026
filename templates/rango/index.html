@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Rango</title>
-</head>
-<body>
-    <h1>Rango says...</h1>
-    <strong>{{ boldmessage }}</strong>
-</body>
-</html>
+{% extends 'rango/base.html' %}
+
+{% block title %}
+Rango
+{% endblock %}
+
+{% block body_block %}
+<h1>Rango says...</h1>
+<strong>{{ boldmessage }}</strong>
+{% endblock %}
