@@ -1,4 +1,3 @@
-from django.shortcuts import render, redirect
 from rango.models import Category
 from rango.forms import CategoryForm
 from rango.models import Page
@@ -11,11 +10,12 @@ from django.contrib.auth import authenticate, login, logout
 
 
 def index(request):
-    category_list = Category.objects.all()
-    context_dict = {
-        'boldmessage': 'Crunchy, creamy, cookie, candy, cupcake!',
-        'categories': category_list
-    }
+    category_list = Category.objects.order_by('-likes')[:5]
+
+    context_dict = {}
+    context_dict['categories'] = category_list
+    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+
     return render(request, 'rango/index.html', context=context_dict)
 
 def add_category(request):
@@ -62,30 +62,29 @@ def show_category(request, category_name_slug):
 
     return render(request, 'rango/category.html', context=context_dict)
 
-def add_page(request, category_name_slug):
+def add_page(request, category_slug):
     try:
-        category = Category.objects.get(slug=category_name_slug)
+        category = Category.objects.get(slug=category_slug)
     except Category.DoesNotExist:
-        return redirect('rango:index')
-
-    form = PageForm()
+        category = None
 
     if request.method == 'POST':
         form = PageForm(request.POST)
-
         if form.is_valid():
-            page = form.save(commit=False)
-            page.category = category
-            page.views = 0
-            page.save()
-
-            return redirect('rango:show_category',
-                            category_name_slug=category.slug)
+            if category:
+                page = form.save(commit=False)
+                page.category = category
+                page.views = 0
+                page.save()
+                return redirect('rango:show_category', category_slug=category.slug)
         else:
             print(form.errors)
+    else:
+        form = PageForm()
 
     context_dict = {'form': form, 'category': category}
     return render(request, 'rango/add_page.html', context=context_dict)
+
 
 
 def register(request):
@@ -107,7 +106,6 @@ def register(request):
                 profile.picture = request.FILES['picture']
 
             profile.save()
-
             registered = True
         else:
             print(user_form.errors, profile_form.errors)
@@ -115,13 +113,15 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    context_dict = {
-        'user_form': user_form,
-        'profile_form': profile_form,
-        'registered': registered
-    }
-
-    return render(request, 'rango/register.html', context=context_dict)
+    return render(
+        request,
+        'rango/register.html',
+        {
+            'user_form': user_form,
+            'profile_form': profile_form,
+            'registered': registered
+        }
+    )
 
 
 def user_login(request):
