@@ -6,6 +6,7 @@ Rango
 
 {% block body_block %}
 <h1>Rango says...</h1>
+
 <strong>{{ boldmessage }}</strong>
 
 <h2>Categories</h2>
@@ -13,11 +14,20 @@ Rango
 {% if categories %}
 <ul>
     {% for category in categories %}
-        <li>{{ category.name }}</li>
+        <li>
+            <a href="{% url 'rango:category' category.slug %}">
+                {{ category.name }}
+            </a>
+        </li>
+
     {% endfor %}
 </ul>
 {% else %}
 <p>No categories present.</p>
 {% endif %}
+
+<p>
+    <a href="/rango/add_category/">Add a New Category</a>
+</p>
 
 {% endblock %}
