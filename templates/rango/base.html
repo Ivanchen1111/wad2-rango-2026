@@ -1,14 +1,33 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{% block title %}Rango{% endblock %}</title>
+    <title>
+        {% block title %}Rango{% endblock %}
+    </title>
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
+
 <body>
 
-{% block body_block %}
-{% endblock %}
+    <h1>Rango says...</h1>
+
+    <div>
+        {% if user.is_authenticated %}
+            Logged in as <strong>{{ user.username }}</strong>
+            |
+            <a href="{% url 'rango:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'rango:login' %}">Login</a>
+        {% endif %}
+    </div>
+
+    <hr>
+
+    {% block body_block %}
+    {% endblock %}
 
 </body>
 </html>
