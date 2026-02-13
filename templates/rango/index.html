@@ -12,6 +12,11 @@ Rango
 <p><strong>{{ boldmessage }}</strong></p>
 
 <p>
+    You have visited this site {{ visits }} time{{ visits|pluralize }}.
+</p>
+
+
+<p>
     <a href="{% url 'rango:about' %}">About</a> |
     <a href="{% url 'rango:register' %}">Register</a> |
     <a href="{% url 'rango:login' %}">Login</a>

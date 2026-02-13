@@ -6,6 +6,7 @@ from rango.forms import UserForm, UserProfileForm
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
+from datetime import datetime
 
 
 
@@ -15,6 +16,12 @@ def index(request):
     context_dict = {}
     context_dict['categories'] = category_list
     context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+
+    visits = request.session.get('visits', 0)
+    visits += 1
+    request.session['visits'] = visits
+
+    context_dict['visits'] = visits
 
     return render(request, 'rango/index.html', context=context_dict)
 
